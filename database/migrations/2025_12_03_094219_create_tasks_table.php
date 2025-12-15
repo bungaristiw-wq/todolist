@@ -15,6 +15,7 @@ return new class extends Migration
         $table->id();
         $table->unsignedBigInteger('todolist_id');
         $table->string('judul_task');
+        $table->text('description')->nullable();
         $table->boolean('is_done')->default(false);
         $table->timestamps();
 

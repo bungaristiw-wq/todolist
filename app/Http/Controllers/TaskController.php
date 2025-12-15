@@ -8,71 +8,80 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    // TAMPILKAN TASK DALAM 1 LIST
+    // Tampilkan task dalam satu todolist
     public function index($todolist_id)
     {
-        $todolist = Todolist::findOrFail($todolist_id);
+        $todolist = Todolist::where('user_id', auth()->id())
+            ->findOrFail($todolist_id);
+
         $tasks = Task::where('todolist_id', $todolist_id)->get();
 
         return view('task.index', compact('todolist', 'tasks'));
     }
 
-    // FORM TAMBAH
+    // Form tambah task
     public function create($todolist_id)
     {
-        $todolist = Todolist::findOrFail($todolist_id);
+        $todolist = Todolist::where('user_id', auth()->id())
+            ->findOrFail($todolist_id);
+
         return view('task.create', compact('todolist'));
     }
 
-    // SIMPAN TASK
-    public function store(Request $request, $todolist_id)
-    {
-        $request->validate([
-            'name' => 'required',
-            'status' => 'required'
-        ]);
+    // Simpan task
+    public function store(Request $request, $todolistId)
+{
+    $request->validate([
+        'judul_task' => 'required',
+        'description' => 'nullable',
+    ]);
 
-        Task::create([
-            'todolist_id' => $todolist_id,
-            'name' => $request->name,
-            'status' => $request->status,
-        ]);
+    Task::create([
+        'todolist_id' => $todolistId,
+        'judul_task' => $request->judul_task,
+        'description' => $request->description,
+        'is_done' => $request->has('is_done'),
+    ]);
 
-        return redirect()->route('task.index', $todolist_id);
-    }
+    return redirect()->route('task.index', $todolistId);
+}
 
-    // FORM EDIT
+    // Form edit task
     public function edit($todolist_id, $task_id)
     {
-        $todolist = Todolist::findOrFail($todolist_id);
-        $task = Task::findOrFail($task_id);
+        $todolist = Todolist::where('user_id', auth()->id())
+            ->findOrFail($todolist_id);
+
+        $task = Task::where('todolist_id', $todolist_id)
+            ->findOrFail($task_id);
 
         return view('task.edit', compact('todolist', 'task'));
     }
 
-    // UPDATE TASK
-    public function update(Request $request, $todolist_id, $task_id)
-    {
-        $task = Task::findOrFail($task_id);
+    // Update task
+    public function update(Request $request, $todolistId, $taskId)
+{
+    $task = Task::findOrFail($taskId);
 
-        $request->validate([
-            'name' => 'required',
-            'status' => 'required'
-        ]);
+    $task->update([
+        'judul_task' => $request->judul_task,
+        'description' => $request->description,
+        'is_done' => $request->has('is_done'),
+    ]);
 
-        $task->update([
-            'name' => $request->name,
-            'status' => $request->status
-        ]);
+    return redirect()->route('task.index', $todolistId);
+}
 
-        return redirect()->route('task.index', $todolist_id);
-    }
 
-    // DELETE TASK
+    // Hapus task
     public function destroy($todolist_id, $task_id)
     {
-        Task::findOrFail($task_id)->delete();
+        $task = Task::where('todolist_id', $todolist_id)
+            ->findOrFail($task_id);
 
-        return redirect()->route('task.index', $todolist_id);
+        $task->delete();
+
+        return redirect()->route('task.index', $todolist_id)
+            ->with('success', 'Task berhasil dihapus');
     }
 }

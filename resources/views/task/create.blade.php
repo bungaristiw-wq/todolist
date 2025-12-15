@@ -1,43 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Buat Task</title>
+    <title>Tambah Task</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-pink-100 min-h-screen flex justify-center items-center">
+<body class="bg-pink-50 min-h-screen flex items-center justify-center">
 
-    <div class="bg-white w-96 p-8 rounded-2xl shadow-xl">
-        <h1 class="text-2xl font-bold text-center text-pink-600 mb-6">
-            Tambah Task
-        </h1>
+<div class="bg-white w-full max-w-md p-8 rounded-2xl shadow">
+    <h1 class="text-2xl font-bold text-pink-600 mb-6 text-center">
+        Tambah Task
+    </h1>
 
-        <form method="POST" action="{{ route('task.store', $todolist->id) }}">
-            @csrf
+    <form method="POST" action="{{ route('task.store', $todolist->id) }}">
+        @csrf
 
-            <label class="font-semibold">Nama Task</label>
-            <input type="text" name="name"
-                   class="w-full px-3 py-2 border rounded-lg mt-1 mb-4 focus:ring-2 focus:ring-pink-300"
-                   required>
+        <label class="font-semibold">Nama Task</label>
+        <input type="text" name="judul_task"
+               class="w-full border px-3 py-2 rounded mb-4" required>
 
-            <label class="font-semibold">Status</label>
-            <select name="status"
-                    class="w-full px-3 py-2 border rounded-lg mt-1 mb-4 focus:ring-2 focus:ring-pink-300">
-                <option value="pending">Pending</option>
-                <option value="done">Done</option>
-            </select>
+        <label class="font-semibold">Deskripsi</label>
+        <textarea name="description"
+                  class="w-full border px-3 py-2 rounded mb-6"></textarea>
+        <label class="flex items-center gap-2 mb-6">
+    <input type="checkbox" name="is_done" value="0">
+    Tandai selesai
+</label>
+          
+        <button class="w-full bg-pink-500 text-white py-2 rounded-lg">
+            Simpan
+        </button>
+        <a href="{{ url()->previous() }}"
+   class="inline-block mb-4 text-pink-600 hover:underline">
+    ← Kembali
+</a>
 
-            <button
-                class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2 rounded-lg font-semibold transition">
-                Simpan
-            </button>
-        </form>
-
-        <a href="{{ route('task.index', $todolist->id) }}"
-           class="block text-center mt-4 text-pink-600 font-semibold">
-            Kembali
-        </a>
-    </div>
+    </form>
+</div>
 
 </body>
 </html>

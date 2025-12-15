@@ -7,61 +7,61 @@ use Illuminate\Http\Request;
 
 class TodolistController extends Controller
 {
-    // Tampilkan semua list milik user yang sedang login
     public function index()
     {
         $lists = Todolist::where('user_id', auth()->id())->get();
         return view('todolist.index', compact('lists'));
     }
 
-    // Form tambah list
     public function create()
     {
         return view('todolist.create');
     }
 
-    // Proses tambah list
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required'
+            'nama_list' => 'required',
+            'description' => 'nullable'
         ]);
 
         Todolist::create([
             'user_id' => auth()->id(),
-            'title' => $request->title,
+            'nama_list' => $request->nama_list,
             'description' => $request->description
         ]);
 
-        return redirect('/todolist')->with('success', 'List berhasil dibuat!');
+        return redirect()->route('todolist.index');
     }
 
-    // Form edit
     public function edit($id)
     {
         $list = Todolist::where('user_id', auth()->id())->findOrFail($id);
         return view('todolist.edit', compact('list'));
     }
 
-    // Proses update
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'nama_list' => 'required',
+            'description' => 'nullable'
+        ]);
+
         $list = Todolist::where('user_id', auth()->id())->findOrFail($id);
 
         $list->update([
-            'title' => $request->title,
+            'nama_list' => $request->nama_list,
             'description' => $request->description
         ]);
 
-        return redirect('/todolist')->with('success', 'List berhasil diupdate!');
+        return redirect()->route('todolist.index');
     }
 
-    // Hapus list
     public function destroy($id)
     {
         $list = Todolist::where('user_id', auth()->id())->findOrFail($id);
         $list->delete();
 
-        return redirect('/todolist')->with('success', 'List berhasil dihapus!');
+        return redirect()->route('todolist.index');
     }
 }

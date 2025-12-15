@@ -15,6 +15,7 @@ public function up(): void
         $table->id();
         $table->unsignedBigInteger('user_id');
         $table->string('nama_list');
+        $table->text('description')->nullable();
         $table->timestamps();
 
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
